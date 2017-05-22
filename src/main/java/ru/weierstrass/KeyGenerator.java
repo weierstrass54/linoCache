@@ -10,6 +10,8 @@ public class KeyGenerator {
         List<String> key = new ArrayList<>();
         if (value instanceof Collection) {
             ((Collection) value).forEach(o -> key.add(generateSingle(o)));
+        } else {
+            key.add(generateSingle(value));
         }
         return key;
     }

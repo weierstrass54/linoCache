@@ -1,11 +1,13 @@
 package ru.weierstrass;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,16 @@ public class LinoCache extends ConcurrentHashMap<Object, Object> {
     public Object putIfAbsent(Object key, Object value) {
         putMapKey(key, value);
         return super.putIfAbsent(key, value);
+    }
+
+    public void evict(String key) {
+        Map<List<String>, Object> evictions = _map.entrySet().stream()
+            .filter(entry -> entry.getKey().contains(key))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        evictions.forEach((innerKey, realKey) -> {
+            _map.remove(innerKey);
+            remove(realKey);
+        });
     }
 
     private void putMapKey(Object key, Object value) {

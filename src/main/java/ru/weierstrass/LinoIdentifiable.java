@@ -1,6 +1,6 @@
 package ru.weierstrass;
 
-public interface Identifiable {
+public interface LinoIdentifiable {
 
     String getKey();
 
